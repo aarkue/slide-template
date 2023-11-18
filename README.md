@@ -1,6 +1,5 @@
 # RevealJS + React + TailwindCSS
-
-A heavily customizable presentation slides template featuring React and TailwindCSS.
+A heavily customizable presentation slides template using [Revealjs](https://revealjs.com/) and featuring [React](https://react.dev) and [Tailwind CSS](https://tailwindcss.com).
 
 ## Demo Video
 https://github.com/aarkue/slide-template/assets/20766652/d3a97cc4-aff6-4168-a949-cb262fbc7275
