@@ -1,19 +1,90 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Excalidraw } from "@excalidraw/excalidraw";
 import type { ExcalidrawElement } from "@excalidraw/excalidraw/types/element/types";
-import type { AppState, BinaryFiles } from "@excalidraw/excalidraw/types/types";
+import {
+  ExcalidrawImperativeAPI,
+  type AppState,
+  type BinaryFiles,
+} from "@excalidraw/excalidraw/types/types";
 import classNames from "classnames";
-import { useEffect, useRef, useState } from "react";
-import { isPDFExport, reveal } from "../reveal/reaveal";
+import { useContext, useEffect, useRef, useState } from "react";
+import { RevealContext, isPDFExport } from "../reveal/reaveal";
 
+const DEFAULT_APP_STATE = {
+  viewBackgroundColor: "transparent",
+  activeTool: {
+    customType: null,
+    type: "freedraw",
+    locked: false,
+    lastActiveTool: null,
+  },
+} as const;
 export default function ExcalidrawWrapper() {
   const [showAnnotations, setShowAnnotations] = useState(false);
-  const lastDataRef = useRef<
-    {
-      elements: readonly ExcalidrawElement[];
-      appState: AppState;
-      files: BinaryFiles;
-    }[]
+  const excalidrawRef = useRef<ExcalidrawImperativeAPI>();
+  const { reveal } = useContext(RevealContext);
+  const [currentIndex, setCurrentIndex] = useState(
+    reveal?.getState().indexh ?? 0,
+  );
+
+  useEffect(() => {
+    if (reveal) {
+      const listener = () => {
+        setCurrentIndex(reveal!.getState().indexh ?? 0);
+      };
+
+      reveal.on("slidechanged", listener);
+      return () => reveal.off("slidechanged", listener);
+    }
+  }, [reveal]);
+
+  // // Excalidraw data is constantly saved to this ref (used to udpdate annotationsPerSlide later)
+  const lastDataRef = useRef<{
+    elements: readonly ExcalidrawElement[];
+    appState: AppState;
+    files: BinaryFiles;
+  }>();
+
+  // // Last slide index (this is the slide index the data lastDataRef belongs to)
+  const lastSlideIndexRef = useRef<number>(reveal?.getState().indexh || 0);
+
+  // Annotation data per slide
+  const annotationsPerSlide = useRef<
+    (
+      | {
+          elements: readonly ExcalidrawElement[];
+          appState: AppState;
+          files: BinaryFiles;
+        }
+      | undefined
+    )[]
   >([]);
+
+  useEffect(() => {
+    if (lastDataRef.current !== undefined) {
+      annotationsPerSlide.current[lastSlideIndexRef.current] = {
+        ...lastDataRef.current,
+        appState: DEFAULT_APP_STATE,
+      } as any;
+      lastDataRef.current = undefined;
+    }
+    if (excalidrawRef) {
+      const data = annotationsPerSlide.current[currentIndex];
+      excalidrawRef.current?.history.clear();
+      if (data === undefined) {
+        excalidrawRef.current?.updateScene({
+          appState: DEFAULT_APP_STATE,
+          elements: [],
+        });
+      } else {
+        excalidrawRef.current?.updateScene(
+          annotationsPerSlide.current[currentIndex] as any,
+        );
+      }
+    }
+    lastSlideIndexRef.current = currentIndex;
+  }, [currentIndex, excalidrawRef, showAnnotations, annotationsPerSlide]);
+
   useEffect(() => {
     if (!isPDFExport()) {
       const listener = (ev: KeyboardEvent) => {
@@ -27,12 +98,12 @@ export default function ExcalidrawWrapper() {
       };
     }
   }, []);
+
   if (isPDFExport()) {
     // Do not render anything for PDF export
     return;
   }
 
-  const slideIndex = reveal?.getState().indexh;
   return (
     <>
       {showAnnotations && (
@@ -48,24 +119,31 @@ export default function ExcalidrawWrapper() {
           }}
         >
           <Excalidraw
+            excalidrawAPI={(api) => (excalidrawRef.current = api)}
             onChange={(elements, appState, files) => {
-              if (slideIndex !== undefined) {
-                lastDataRef.current[slideIndex] = { elements, appState, files };
-              }
+              lastDataRef.current = { elements, appState, files };
             }}
             initialData={{
-              appState: {
-                viewBackgroundColor: "transparent",
-                activeTool: {
-                  customType: null,
-                  type: "freedraw",
-                  locked: false,
-                  lastActiveTool: null,
-                },
-              },
-              ...(slideIndex !== undefined
-                ? lastDataRef.current[slideIndex]
+              appState: DEFAULT_APP_STATE,
+              ...(currentIndex !== undefined
+                ? annotationsPerSlide.current[currentIndex]
                 : {}),
+            }}
+            renderTopRightUI={() => {
+              return (
+                <button
+                  title="Reset annotations for this slide"
+                  className="text-red-500 px-2 rounded-md border bg-red-100 hover:bg-red-300 hover:text-red-800 active:bg-red-400"
+                  onClick={() => {
+                    excalidrawRef.current?.updateScene({
+                      elements: [],
+                      appState: DEFAULT_APP_STATE,
+                    });
+                  }}
+                >
+                  Reset
+                </button>
+              );
             }}
           />
         </div>
