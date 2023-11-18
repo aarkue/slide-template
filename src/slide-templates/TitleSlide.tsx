@@ -14,7 +14,7 @@ export default function TitleSlide(props: TitleSlideProps) {
     <Slide showFooter={props.showFooter} {...props.slideProps}>
       <div
         className={classNames(
-          "flex flex-col h-full w-full px-12",
+          "flex flex-col h-full w-full px-12 pt-8",
           { "justify-start": props.position === "top" },
           { "justify-end": props.position === "bottom" },
           { "justify-center": props.position === "center" },
