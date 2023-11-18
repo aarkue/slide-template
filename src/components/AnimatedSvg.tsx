@@ -54,6 +54,9 @@ export default function AnimatedSvg(props: AnimatedSvgProps) {
 
   return (
     <div
+      title={
+        props.clickToRestart === true ? "Click to restart animation" : undefined
+      }
       className={classNames(props.containerClassName, {
         "cursor-pointer": props.clickToRestart === true,
       })}

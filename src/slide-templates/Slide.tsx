@@ -39,7 +39,7 @@ export default function Slide(props: SlideProps) {
         data-background-image={props.backgroundImage}
         ref={sectionRef}
         id={slideIndex !== undefined ? `slide-${slideIndex + 1}` : undefined}
-        className={classNames("w-full h-full", {
+        className={classNames("w-full h-full border", {
           "!relative !top-0 !left-0": isPDF,
         })}
       >
@@ -50,12 +50,12 @@ export default function Slide(props: SlideProps) {
             { "text-center": props.textAlign === "center" },
             { "text-right": props.textAlign === "right" },
             { "mb-4": props.showFooter },
-            { "pt-16 pl-16": props.padding },
+            { "pt-4 pl-8 xl:pt-8 xl:pl-16": props.padding },
           )}
         >
           {props.children}
           {props.showFooter !== false && (
-            <div className={classNames({ "-ml-16": props.padding })}>
+            <div className={classNames({ "xl:-ml-16 -ml-8": props.padding })}>
               <Footer slideIndex={slideIndex} />
             </div>
           )}
