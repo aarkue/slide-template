@@ -39,7 +39,7 @@ export default function Slide(props: SlideProps) {
         data-background-image={props.backgroundImage}
         ref={sectionRef}
         id={slideIndex !== undefined ? `slide-${slideIndex + 1}` : undefined}
-        className={classNames("w-full h-full border", {
+        className={classNames("w-full h-full", {
           "!relative !top-0 !left-0": isPDF,
         })}
       >
