@@ -27,7 +27,7 @@ export default function BasicInstructionSlide() {
                 <li>PDF Export ✨</li>
                 <li>Rich ecosystem of plugins 💫</li>
                 <ul>
-                  <li className="text-3xl text-gray-700">
+                  <li className=" text-gray-700">
                     like zoom, speaker notes, ...
                   </li>
                 </ul>
