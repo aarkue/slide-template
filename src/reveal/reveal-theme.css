@@ -1,5 +1,5 @@
 /**
- * Cstom version of original white theme for reveal.js. This is the opposite of the 'black' theme.
+ * Custom version of original white theme for reveal.js.
  *
  * Original theme created by Hakim El Hattab, http://hakim.se
  * https://revealjs.com/themes/
@@ -188,6 +188,7 @@ body {
 .reveal ol ul {
   display: block;
   margin-left: 40px;
+  font-size: calc(100% * 0.9);
 }
 
 .reveal dt {
