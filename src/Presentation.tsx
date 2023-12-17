@@ -50,7 +50,7 @@ export default function Presentation() {
               {CONFIG.authors.map((a) => a.name).join(", ")}
             </h2>
             <a
-              className="text-3xl font-light tracking-tight mt-0"
+              className="text-3xl inline-block w-fit mx-auto font-light tracking-tight mt-0"
               href={`mailto:${CONFIG.email}`}
             >
               {CONFIG.email}
