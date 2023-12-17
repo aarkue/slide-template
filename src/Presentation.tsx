@@ -40,7 +40,6 @@ export default function Presentation() {
           <div className="flex flex-col justify-between">
             <h1 className="mb-8 text-blue-500 text-8xl leading-tight font-black">
               <GradientTitle
-                pdfClasses="text-blue-500"
                 className="bg-gradient-to-b from-sky-500 to-blue-500"
               >
                 {CONFIG.presentationTitle}
@@ -51,7 +50,7 @@ export default function Presentation() {
               {CONFIG.authors.map((a) => a.name).join(", ")}
             </h2>
             <a
-              className="text-3xl font-light tracking-tight mt-0"
+              className="text-3xl inline-block w-fit mx-auto font-light tracking-tight mt-0"
               href={`mailto:${CONFIG.email}`}
             >
               {CONFIG.email}
