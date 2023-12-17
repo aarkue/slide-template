@@ -27,7 +27,7 @@ export default function GradientTitle(props: GradientTitleProps) {
           "bg-gradient-to-r from-blue-600 to-80% to-violet-500",
         !isPDFExport() && props.className,
         isPDFExport() && "text-blue-500",
-        isPDFExport() && props.pdfClasses,
+        isPDFExport() && (props.pdfClasses ?? "text-inherit"),
       )}
     >
       {props.children}

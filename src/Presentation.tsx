@@ -40,7 +40,6 @@ export default function Presentation() {
           <div className="flex flex-col justify-between">
             <h1 className="mb-8 text-blue-500 text-8xl leading-tight font-black">
               <GradientTitle
-                pdfClasses="text-blue-500"
                 className="bg-gradient-to-b from-sky-500 to-blue-500"
               >
                 {CONFIG.presentationTitle}
